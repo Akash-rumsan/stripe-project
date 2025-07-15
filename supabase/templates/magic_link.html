@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login to Your Account</title>
+</head>
+
+<body
+    style="margin: 0; padding: 0; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f9f9f9;">
+    <table style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-collapse: collapse;">
+        <!-- Header -->
+        <thead>
+            <tr>
+                <th style="padding: 40px 30px; text-align: center; background-color: #2D3748; color: #ffffff;">
+                    <h1 style="margin: 0; font-size: 24px; font-weight: 600;">Login Verification</h1>
+                </th>
+            </tr>
+        </thead>
+
+        <!-- Content -->
+        <tbody>
+            <tr>
+                <td style="padding: 40px 30px;">
+                    <p style="margin-top: 0; margin-bottom: 20px; font-size: 16px; line-height: 1.5;">Hello,</p>
+
+                    <p style="margin-top: 0; margin-bottom: 20px; font-size: 16px; line-height: 1.5;">We received a
+                        request to
+                        sign
+                        in to your account. You can complete the login process using verification code below:</p>
+
+                    <!-- OTP Code Box -->
+                    <table style="margin-bottom: 30px; border-collapse: collapse; width:100%;">
+                        <thead>
+                            <tr>
+                                <th
+                                    style="padding: 20px; background-color: #f3f4f6; border-radius: 8px; text-align: center; ">
+                                    <p style="margin-top: 0; margin-bottom: 10px; font-size: 14px; color: #718096;">Your
+                                        verification
+                                        code:
+                                    </p>
+                                    <p
+                                        style="margin: 0; font-size: 32px; font-weight: 700; letter-spacing: 5px; color: #1A202C;">
+                                        {{
+                                        .Token
+                                        }}
+                                    </p>
+                                    <p style="margin-top: 10px; margin-bottom: 0; font-size: 12px; color: #718096;">This
+                                        code expires in 1
+                                        hour</p>
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
+
+                    <p style="margin-top: 0; margin-bottom: 20px; font-size: 16px; line-height: 1.5;">If you didn't
+                        request this
+                        login, you can safely ignore this email.</p>
+
+                    <p style="margin-top: 0; margin-bottom: 10px; font-size: 16px; line-height: 1.5;">Thanks,<br>The
+                        Team</p>
+                </td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+                <td
+                    style="padding: 20px 30px; text-align: center; background-color: #f7fafc; color: #718096; font-size: 12px; border-top: 1px solid #e2e8f0;">
+                    <p style="margin: 0 0 10px 0;">This is an automated message, please do not reply.</p>
+                    <p style="margin: 0;">© 2024 Your Company. All rights reserved.</p>
+                </td>
+            </tr>
+        </tbody>
+
+    </table>
+</body>
+
+</html>
