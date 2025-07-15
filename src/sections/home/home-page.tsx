@@ -17,6 +17,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useAppContext } from "@/context/AppContext";
+import { usePaymentPlanContext } from "@/context/PaymentPlanContext";
 
 interface HomePageProps {
   activeSubscriptions?: number;
@@ -27,6 +29,13 @@ export default function HomePage({
   activeSubscriptions = 3,
   totalSpent = 60,
 }: HomePageProps) {
+  const { user } = useAppContext();
+  const { paymentPlans, isPending } = usePaymentPlanContext();
+  if (!isPending) {
+    console.log(paymentPlans, "payment plans in home page");
+  }
+  console.log(user, "user in home page");
+
   const handleChoosePlans = () => {
     window.location.href = "/plans";
   };

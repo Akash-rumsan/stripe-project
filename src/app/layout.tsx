@@ -6,6 +6,8 @@ import { QueryProvider } from "@/providers/query-providers";
 import HydrationZustand from "@/layouts/zustand-hydration";
 
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { AppProvider } from "@/context/AppContext";
+import { PaymentPlanProvider } from "@/context/PaymentPlanContext";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -32,10 +34,14 @@ export default function RootLayout({
     <html lang="en">
       <body className={cn(" min-h-screen", geistSans, geistMono)}>
         <QueryProvider>
-          <HydrationZustand>
-            {children}
-            <ReactQueryDevtools initialIsOpen={false} />
-          </HydrationZustand>
+          <AppProvider>
+            <PaymentPlanProvider>
+              <HydrationZustand>
+                {children}
+                <ReactQueryDevtools initialIsOpen={false} />
+              </HydrationZustand>
+            </PaymentPlanProvider>
+          </AppProvider>
         </QueryProvider>
       </body>
     </html>
