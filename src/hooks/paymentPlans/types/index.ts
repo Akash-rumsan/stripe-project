@@ -1,6 +1,7 @@
 export interface PaymentPlan {
   id: string;
   name: string;
-  price: number;
+  amount: number;
   interval: string;
+  description: string;
 }

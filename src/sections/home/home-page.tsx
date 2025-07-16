@@ -19,6 +19,11 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { useAppContext } from "@/context/AppContext";
 import { usePaymentPlanContext } from "@/context/PaymentPlanContext";
+import { useEffect, useState } from "react";
+import { set } from "zod";
+import AddProductDialog from "../payment-plans/add-product-dialog";
+import { useCreatePaymentPlan } from "@/hooks/paymentPlans";
+import { useRouter } from "next/navigation";
 
 interface HomePageProps {
   activeSubscriptions?: number;
@@ -29,6 +34,9 @@ export default function HomePage({
   activeSubscriptions = 3,
   totalSpent = 60,
 }: HomePageProps) {
+  const router = useRouter();
+  const [isAddProductDialogOpen, setIsAddProductDialogOpen] = useState(false);
+
   const { user } = useAppContext();
   const { paymentPlans, isPending } = usePaymentPlanContext();
   if (!isPending) {
@@ -37,12 +45,19 @@ export default function HomePage({
   console.log(user, "user in home page");
 
   const handleChoosePlans = () => {
-    window.location.href = "/plans";
+    router.push("/dashboard/plans");
+    // window.location.href = "/plans";
   };
 
   const handleViewSubscriptions = () => {
     window.location.href = "/subscriptions";
   };
+
+  // useEffect(() => {
+  //   if (paymentPlans?.length === 0 && !isPending) {
+  //     setIsAddProductDialogOpen(true);
+  //   }
+  // }, [paymentPlans, isPending]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
