@@ -8,6 +8,7 @@ import HydrationZustand from "@/layouts/zustand-hydration";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { AppProvider } from "@/context/AppContext";
 import { PaymentPlanProvider } from "@/context/PaymentPlanContext";
+import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -39,6 +40,7 @@ export default function RootLayout({
               <HydrationZustand>
                 {children}
                 <ReactQueryDevtools initialIsOpen={false} />
+                <Toaster />
               </HydrationZustand>
             </PaymentPlanProvider>
           </AppProvider>

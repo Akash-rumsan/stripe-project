@@ -20,7 +20,7 @@ export async function updateSession(request: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  console.log("user", user);
+  // console.log("user", user);
   const { pathname } = request.nextUrl;
   const isProtectedRoute = pathname.startsWith("/dashboard");
 

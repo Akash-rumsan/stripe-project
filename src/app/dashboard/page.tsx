@@ -17,8 +17,8 @@ export default async function Page() {
   // }
 
   return (
-    <AppLayout>
-      <HomePage />
-    </AppLayout>
+    // <AppLayout>
+    <HomePage />
+    // </AppLayout>
   );
 }

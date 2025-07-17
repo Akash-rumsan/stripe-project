@@ -27,11 +27,11 @@ export async function POST(req: NextRequest) {
       ?.subscription as string;
     const customerEmail = invoice.customer_email as string | null;
     const customerId = invoice.customer as string;
-
     const subscription = await stripe.subscriptions.retrieve(subscriptionId);
     const products = await stripe.products.retrieve(
       subscription.items.data[0].price.product as string
     );
+
     const { error } = await supabase.from("subscriptions").insert({
       product_name: products.name,
       price: Number(subscription.items.data[0].price.unit_amount) / 100,

@@ -50,6 +50,13 @@ export default function PaymentPlans() {
             Scale your projects with our flexible pricing options. Start small
             and grow as your needs evolve.
           </p>
+          <Button
+            className="bg-blue-600 hover:bg-blue-700 text-white text-lg px-8 py-4"
+            onClick={() => setIsAddProductDialogOpen(true)}
+          >
+            <Plus className="mr-2 h-5 w-5" />
+            Add Plans
+          </Button>
         </div>
 
         {/* Pricing Cards */}
@@ -67,13 +74,13 @@ export default function PaymentPlans() {
               products, they'll appear here as subscription options.
             </p>
             <div className="space-y-4">
-              <Button
+              {/* <Button
                 className="bg-blue-600 hover:bg-blue-700 text-white text-lg px-8 py-4"
                 onClick={() => setIsAddProductDialogOpen(true)}
               >
                 <Plus className="mr-2 h-5 w-5" />
                 Add Plans
-              </Button>
+              </Button> */}
               <p className="text-sm text-slate-500 dark:text-slate-500">
                 Create your first product plan to get started with subscriptions
               </p>
@@ -111,22 +118,6 @@ export default function PaymentPlans() {
                     </span>
                   </div>
                 </CardHeader>
-
-                {/* <CardContent className="space-y-4">
-                  <ul className="space-y-3">
-                    {plan.features.map((feature, featureIndex) => (
-                      <li
-                        key={featureIndex}
-                        className="flex items-center gap-3"
-                      >
-                        <Check className="h-5 w-5 text-green-500 flex-shrink-0" />
-                        <span className="text-slate-700 dark:text-slate-300">
-                          {feature}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent> */}
 
                 <CardFooter className="pt-6">
                   <Checkout plan={plan} />

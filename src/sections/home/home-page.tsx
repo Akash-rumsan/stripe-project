@@ -37,12 +37,10 @@ export default function HomePage({
   const router = useRouter();
   const [isAddProductDialogOpen, setIsAddProductDialogOpen] = useState(false);
 
-  const { user } = useAppContext();
   const { paymentPlans, isPending } = usePaymentPlanContext();
   if (!isPending) {
     console.log(paymentPlans, "payment plans in home page");
   }
-  console.log(user, "user in home page");
 
   const handleChoosePlans = () => {
     router.push("/dashboard/plans");
@@ -50,7 +48,9 @@ export default function HomePage({
   };
 
   const handleViewSubscriptions = () => {
-    window.location.href = "/subscriptions";
+    router.push("/dashboard/subscriptions");
+
+    // window.location.href = "/subscriptions";
   };
 
   // useEffect(() => {

@@ -10,6 +10,7 @@ import {
   Hash,
   User,
   Calendar,
+  ArrowLeft,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -79,6 +80,15 @@ export default function SuccessPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
       <div className="container mx-auto px-4 py-16">
+        <Link href="/dashboard">
+          <Button
+            variant="ghost"
+            className="mb-8 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Home
+          </Button>
+        </Link>
         {/* Success Header */}
         <div className="text-center mb-16">
           <div className="mx-auto mb-8 p-6 bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 rounded-full w-fit shadow-xl">
@@ -244,7 +254,7 @@ export default function SuccessPage() {
                     </div>
                   </div>
                 </div>
-                <Link href={"/"}>
+                <Link href={"/dashboard"}>
                   <Button
                     className="w-full bg-blue-600 hover:bg-blue-700 text-white"
                     size="lg"

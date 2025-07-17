@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useToast } from "../use-toast";
 
 export const useFetchPaymentPlans = () => {
   return useQuery({
@@ -13,7 +14,6 @@ export const useFetchPaymentPlans = () => {
   });
 };
 const createPaymentPlan = async (planData: any) => {
-  console.log(planData, "plan data in createPaymentPlan");
   const response = await fetch("/api/create-plans", {
     method: "POST",
     headers: {
@@ -31,11 +31,16 @@ const createPaymentPlan = async (planData: any) => {
 
 export const useCreatePaymentPlan = () => {
   const queryClient = useQueryClient();
+  const { toast } = useToast();
 
   return useMutation({
     mutationFn: createPaymentPlan,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["paymentPlans"] });
+      toast({
+        title: "Payment Plan Created",
+        description: "Your payment plan has been created successfully.",
+      });
     },
   });
 };
