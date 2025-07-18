@@ -1,24 +1,7 @@
-// File: /pages/api/create-plan.ts
-
-import { NextApiRequest, NextApiResponse } from "next";
-import Stripe from "stripe";
 import { supabase } from "@/lib/supabase";
 import { stripe } from "@/lib/stripe";
 import { NextRequest, NextResponse } from "next/server";
 
-// const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-//   apiVersion: "2025-06-30.basil",
-// });
-
-// const supabase = createClient(
-//   process.env.SUPABASE_URL!,
-//   process.env.SUPABASE_SERVICE_ROLE_KEY!
-// );
-
-// export default async function handler(
-//   req: NextApiRequest,
-//   res: NextApiResponse
-// ) {
 export async function POST(req: NextRequest, res: NextResponse) {
   console.log(req.method, "Method called in create-plan API");
   if (req.method !== "POST")
@@ -71,7 +54,5 @@ export async function POST(req: NextRequest, res: NextResponse) {
     );
   } catch (err: any) {
     console.error(err);
-    // res.status(500).json({ error: err.message || "Something went wrong" });
-    // res.status(500).json({ error: "Something went wrong" });
   }
 }

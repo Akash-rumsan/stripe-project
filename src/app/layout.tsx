@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { cn } from "@/lib/utils";
 import { QueryProvider } from "@/providers/query-providers";
-import HydrationZustand from "@/layouts/zustand-hydration";
 
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { AppProvider } from "@/context/AppContext";
@@ -22,8 +21,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "AI Admin Portal",
-  description: "AI Admin Portal designed and developed by Rumsan",
+  title: "Stripe Integration",
+  description: "A simple Stripe integration example with Next.js",
 };
 
 export default function RootLayout({
@@ -37,11 +36,9 @@ export default function RootLayout({
         <QueryProvider>
           <AppProvider>
             <PaymentPlanProvider>
-              <HydrationZustand>
-                {children}
-                <ReactQueryDevtools initialIsOpen={false} />
-                <Toaster />
-              </HydrationZustand>
+              {children}
+              <ReactQueryDevtools initialIsOpen={false} />
+              <Toaster />
             </PaymentPlanProvider>
           </AppProvider>
         </QueryProvider>
