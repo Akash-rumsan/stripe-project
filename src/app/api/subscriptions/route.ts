@@ -9,12 +9,11 @@ export async function GET(req: Request) {
     .select("*")
     .eq("customer_email", email)
     .eq("status", "active");
-  // const { data: subscriptionsWithUser, error } = await supabase.from(
-  //   "subscriptions"
-  // ).select(`
-  //   *,
-  //   user: user_id ( id, email )
-  // `);
+  // const { data, error } = await supabase
+  //   .from("subscriptions")
+  //   .select("*, users(*)")
+  //   .eq("customer_email", email)
+  //   .eq("status", "active");
 
   if (error) {
     console.log("Error fetching subscriptions:", error);
