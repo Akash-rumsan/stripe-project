@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import React from "react";
+import React, { useTransition } from "react";
 import { LoaderCircle } from "lucide-react";
 import { useAppContext } from "@/context/AppContext";
 import {
@@ -14,51 +14,85 @@ export default function Checkout({ plan }: any) {
   const { user } = useAppContext();
   const { toast } = useToast();
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const { data } = useFetchSubscriptions(user.email);
 
-  const { mutate: createCheckoutSession, isPending } =
-    useCreateCheckoutSession();
+  const { mutate: createCheckoutSession } = useCreateCheckoutSession();
 
   const { mutate: updateSubscription, isPending: updatingSubscription } =
     useUpdateSubscription();
-  const handleCheckout = async () => {
-    if (data && data.length > 0) {
-      if (plan.stripe_price_id === data[0].stripe_price_id) {
-        toast({
-          title: "Already Subscribed",
-          description: "You are already subscribed to this plan.",
-        });
-        // alert("You already have this plan.");
-        return;
-      }
-      // alert("upgrade your plan");
-      updateSubscription({
-        id: data[0].id,
-        email: user.email!,
-        newPriceId: plan.stripe_price_id,
-      });
-    } else {
-      createCheckoutSession(
-        {
-          priceId: plan.stripe_price_id,
-          customerEmail: user.email!,
-          userId: user?.id!,
-        },
-        {
-          onSuccess: (data) => {
-            if (data.url) {
-              router.push(data.url);
-              // window.location.href = data.url;
-            } else {
-              console.error("Checkout error:", data);
-            }
-          },
+  // const handleCheckout = async () => {
+  //   if (data && data.length > 0) {
+  //     if (plan.stripe_price_id === data[0].stripe_price_id) {
+  //       toast({
+  //         title: "Already Subscribed",
+  //         description: "You are already subscribed to this plan.",
+  //       });
+  //       // alert("You already have this plan.");
+  //       return;
+  //     }
+  //     // alert("upgrade your plan");
+  //     updateSubscription({
+  //       id: data[0].id,
+  //       email: user.email!,
+  //       newPriceId: plan.stripe_price_id,
+  //     });
+  //   } else {
+  //     createCheckoutSession(
+  //       {
+  //         priceId: plan.stripe_price_id,
+  //         customerEmail: user.email!,
+  //         userId: user?.id!,
+  //       },
+  //       {
+  //         onSuccess: (data) => {
+  //           if (data.url) {
+  //             router.push(data.url);
+  //             // window.location.href = data.url;
+  //           } else {
+  //             console.error("Checkout error:", data);
+  //           }
+  //         },
+  //       }
+  //     );
+  //   }
+  // };
+  const handleCheckout = () => {
+    startTransition(() => {
+      if (data && data.length > 0) {
+        if (plan.stripe_price_id === data[0].stripe_price_id) {
+          toast({
+            title: "Already Subscribed",
+            description: "You are already subscribed to this plan.",
+          });
+          return;
         }
-      );
-    }
+        updateSubscription({
+          id: data[0].id,
+          email: user.email!,
+          newPriceId: plan.stripe_price_id,
+        });
+      } else {
+        createCheckoutSession(
+          {
+            priceId: plan.stripe_price_id,
+            customerEmail: user.email!,
+            userId: user?.id!,
+          },
+          {
+            onSuccess: (data) => {
+              if (data.url) {
+                router.push(data.url);
+              } else {
+                console.error("Checkout error:", data);
+              }
+            },
+          }
+        );
+      }
+    });
   };
-
   return (
     <Button
       className={

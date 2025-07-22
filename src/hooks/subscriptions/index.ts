@@ -34,24 +34,6 @@ const deleteSubscription = async (payload: {
     throw new Error("Failed to delete subscription");
   }
   return response.data;
-  // const response = await fetch(
-  //   `/api/subscriptions/cancel/${payload.stripeSubsId}`,
-  //   {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({
-  //       stripeSubsId: payload.stripeSubsId,
-  //       subscriptionId: payload.subscriptionId,
-  //     }),
-  //   }
-  // );
-
-  // if (!response.ok) {
-  //   throw new Error("Failed to delete subscription");
-  // }
-  // return response.json();
 };
 
 export const useDeleteSubscription = () => {
@@ -77,17 +59,11 @@ export const useDeleteSubscription = () => {
 };
 
 const updateSubscription = async (payload: UpdateSubscription) => {
-  const response = await fetch(`/api/subscriptions/${payload.id}`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      email: payload.email,
-      newPriceId: payload.newPriceId,
-    }),
+  const response = await api.post(`/subscriptions/${payload.id}`, {
+    email: payload.email,
+    newPriceId: payload.newPriceId,
+    subId: payload.id, // Include subscription ID if needed
   });
-  return response.json();
 };
 export const useUpdateSubscription = () => {
   const queryClient = useQueryClient();

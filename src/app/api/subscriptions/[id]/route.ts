@@ -2,13 +2,13 @@ import { stripe } from "@/lib/stripe";
 import { supabase } from "@/lib/supabase";
 
 export async function POST(req: Request) {
-  const { email, newPriceId } = await req.json();
+  const { email, newPriceId, subId } = await req.json();
   try {
     const { data: subData, error } = await supabase
       .from("subscriptions")
       .select("*")
       .eq("customer_email", email)
-      .contains("status", "canceled")
+      .eq("status", "active")
       .single();
 
     if (error || !subData) {
@@ -35,11 +35,12 @@ export async function POST(req: Request) {
       .from("subscriptions")
       .update({
         stripe_price_id: newPrice.id,
-        product_name: products.name,
-        price: Number(newPrice.unit_amount) / 100,
+        plan_name: products.name,
+        amount: Number(newPrice.unit_amount) / 100,
         updated_at: new Date().toISOString(),
+        stripe_product_id: products.id,
       })
-      .eq("customer_email", email);
+      .eq("id", subId);
 
     if (updateError) {
       console.error("Error updating subscription in Supabase:", error);

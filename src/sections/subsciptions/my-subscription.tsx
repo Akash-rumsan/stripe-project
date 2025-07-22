@@ -25,10 +25,12 @@ import {
   Zap,
 } from "lucide-react";
 import Link from "next/link";
-import React from "react";
+import React, { useTransition } from "react";
 
 export default function MySubscription() {
   const { user } = useAppContext();
+  const [isPending, startTransition] = useTransition();
+
   const { data } = useFetchSubscriptions(user.email);
   const { mutate: deleteSubscription } = useDeleteSubscription();
 
@@ -70,9 +72,11 @@ export default function MySubscription() {
     subscriptionId: string,
     stripeSubsId: string
   ) => {
-    deleteSubscription({
-      subscriptionId: subscriptionId,
-      stripeSubsId: stripeSubsId,
+    startTransition(() => {
+      deleteSubscription({
+        subscriptionId: subscriptionId,
+        stripeSubsId: stripeSubsId,
+      });
     });
   };
 
