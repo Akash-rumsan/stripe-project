@@ -8,6 +8,7 @@ export async function POST(req: Request) {
       .from("subscriptions")
       .select("*")
       .eq("customer_email", email)
+      .contains("status", "canceled")
       .single();
 
     if (error || !subData) {

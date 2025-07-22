@@ -1,22 +1,25 @@
 import { Button } from "@/components/ui/button";
 import React from "react";
 import { LoaderCircle } from "lucide-react";
-import { useCreateCheckoutSession } from "@/hooks/paymentPlans";
 import { useAppContext } from "@/context/AppContext";
 import {
   useFetchSubscriptions,
   useUpdateSubscription,
 } from "@/hooks/subscriptions";
 import { useToast } from "@/hooks/use-toast";
+import { useCreateCheckoutSession } from "@/hooks/checkout-session";
+import { useRouter } from "next/navigation";
 
 export default function Checkout({ plan }: any) {
   const { user } = useAppContext();
   const { toast } = useToast();
+  const router = useRouter();
 
-  const { data, isLoading, error } = useFetchSubscriptions(user.email);
+  const { data } = useFetchSubscriptions(user.email);
 
   const { mutate: createCheckoutSession, isPending } =
     useCreateCheckoutSession();
+
   const { mutate: updateSubscription, isPending: updatingSubscription } =
     useUpdateSubscription();
   const handleCheckout = async () => {
@@ -38,13 +41,15 @@ export default function Checkout({ plan }: any) {
     } else {
       createCheckoutSession(
         {
-          priceId: plan.stripe_price_id, // Replace with your actual price ID
+          priceId: plan.stripe_price_id,
           customerEmail: user.email!,
+          userId: user?.id!,
         },
         {
           onSuccess: (data) => {
             if (data.url) {
-              window.location.href = data.url;
+              router.push(data.url);
+              // window.location.href = data.url;
             } else {
               console.error("Checkout error:", data);
             }

@@ -1,17 +1,20 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { UpdateSubscription } from "./types";
 import { useToast } from "../use-toast";
+import api from "@/utils/axiosInstance";
 
 export const useFetchSubscriptions = (email: string | undefined) => {
   return useQuery({
     queryKey: ["subscriptions", email],
     enabled: !!email, // Only run the query if email is provided
     queryFn: async () => {
-      const response = await fetch(`/api/subscriptions?email=${email}`);
-      if (!response.ok) {
+      const response = await api.get("/subscriptions", {
+        params: { email }, // Pass email as a query parameter
+      });
+      if (response.status !== 200) {
         throw new Error("Failed to fetch subscriptions");
       }
-      return response.json();
+      return response.data;
     },
   });
 };
@@ -20,24 +23,35 @@ const deleteSubscription = async (payload: {
   stripeSubsId: string;
   subscriptionId: string;
 }) => {
-  const response = await fetch(
-    `/api/subscriptions/cancel/${payload.stripeSubsId}`,
+  const response = await api.post(
+    `/subscriptions/cancel/${payload.stripeSubsId}`,
     {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        stripeSubsId: payload.stripeSubsId,
-        subscriptionId: payload.subscriptionId,
-      }),
+      stripeSubsId: payload.stripeSubsId,
+      subscriptionId: payload.subscriptionId,
     }
   );
-
-  if (!response.ok) {
+  if (response.status !== 200) {
     throw new Error("Failed to delete subscription");
   }
-  return response.json();
+  return response.data;
+  // const response = await fetch(
+  //   `/api/subscriptions/cancel/${payload.stripeSubsId}`,
+  //   {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({
+  //       stripeSubsId: payload.stripeSubsId,
+  //       subscriptionId: payload.subscriptionId,
+  //     }),
+  //   }
+  // );
+
+  // if (!response.ok) {
+  //   throw new Error("Failed to delete subscription");
+  // }
+  // return response.json();
 };
 
 export const useDeleteSubscription = () => {

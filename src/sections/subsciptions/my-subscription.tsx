@@ -29,7 +29,7 @@ import React from "react";
 
 export default function MySubscription() {
   const { user } = useAppContext();
-  const { data, isLoading, error } = useFetchSubscriptions(user.email);
+  const { data } = useFetchSubscriptions(user.email);
   const { mutate: deleteSubscription } = useDeleteSubscription();
 
   const formatDate = (dateString: string) => {
@@ -129,7 +129,7 @@ export default function MySubscription() {
                         <div>
                           <h3 className="text-xl font-bold capitalize">
                             {/* {formatPlanName(subscription.product_name)} */}
-                            {subscription.product_name}
+                            {subscription.plan_name}
                           </h3>
                           <Badge
                             className={`${getStatusColor(
@@ -183,7 +183,7 @@ export default function MySubscription() {
                   <CardContent className="space-y-4">
                     <div className="text-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-xl">
                       <div className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-                        ${subscription.price}
+                        ${subscription.amount}
                       </div>
                       <div className="text-slate-600 dark:text-slate-400">
                         per month
@@ -198,7 +198,7 @@ export default function MySubscription() {
                             Next billing:{" "}
                           </span>
                           <span className="font-medium text-slate-900 dark:text-slate-100">
-                            {formatDate(subscription.ends_at)}
+                            {formatDate(subscription.current_period_end)}
                           </span>
                         </div>
                       </div>
@@ -209,7 +209,7 @@ export default function MySubscription() {
                             Started:{" "}
                           </span>
                           <span className="font-medium text-slate-900 dark:text-slate-100">
-                            {formatDate(subscription.created_at)}
+                            {formatDate(subscription.current_period_start)}
                           </span>
                         </div>
                       </div>

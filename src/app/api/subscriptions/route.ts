@@ -7,9 +7,11 @@ export async function GET(req: Request) {
   const { data, error } = await supabase
     .from("subscriptions")
     .select("*")
-    .eq("customer_email", email);
+    .eq("customer_email", email)
+    .eq("status", "active");
 
   if (error) {
+    console.log("Error fetching subscriptions:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 

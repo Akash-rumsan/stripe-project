@@ -20,49 +20,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
-import { useEffect, useState } from "react";
-
-interface SuccessPageProps {
-  productName?: string;
-  amount?: number;
-  interval?: string;
-  customerEmail?: string;
-  transactionId?: string;
-  nextBilling?: string;
-}
+import { useFetchCheckoutInfo } from "@/hooks/checkout-session";
 
 export default function SuccessPage() {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get("session_id");
 
-  const [loading, setLoading] = useState(true);
-  const [data, setData] = useState<SuccessPageProps | null>(null);
+  const { data, isPending } = useFetchCheckoutInfo(sessionId);
 
-  useEffect(() => {
-    if (!sessionId) return;
-
-    const fetchData = async () => {
-      try {
-        const res = await fetch(
-          `/api/get-checkout-info?session_id=${sessionId}`
-        );
-        const json = await res.json();
-        setData(json);
-      } catch (error) {
-        console.error("Error fetching checkout info", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [sessionId]);
-
-  if (loading) return <p>Loading...</p>;
+  if (isPending) return <p>Loading...</p>;
   if (!data) return <p>Something went wrong.</p>;
 
   const formatDate = (dateString: string) => {

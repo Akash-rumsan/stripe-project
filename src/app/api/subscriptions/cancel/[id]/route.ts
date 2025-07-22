@@ -16,18 +16,23 @@ export async function POST(
     }
 
     // Cancel subscription on Stripe (default: at period end)
-    // const canceledSubscription = await stripe.subscriptions.update(
-    //   subscriptionId,
-    //   { cancel_at_period_end: true }
-    // );
-    const canceledSubscription = await stripe.subscriptions.cancel(
-      payload.stripeSubsId
+    const canceledSubscription = await stripe.subscriptions.update(
+      // subscriptionId,
+      payload.stripeSubsId,
+      { cancel_at_period_end: true }
     );
+    // const canceledSubscription = await stripe.subscriptions.cancel(
+    //   payload.stripeSubsId
+    // );
 
+    // const { error: supabaseError } = await supabase
+    //   .from("subscriptions")
+    //   .delete()
+    //   .eq("id", payload.subscriptionId);
     const { error: supabaseError } = await supabase
       .from("subscriptions")
-      .delete()
-      .eq("id", payload.subscriptionId);
+      .update({ status: "canceled" })
+      .eq("stripe_subscription_id", payload.stripeSubsId);
 
     if (supabaseError) {
       console.error("Supabase update error:", supabaseError);

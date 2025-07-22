@@ -5,6 +5,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 type User = {
   readonly email?: string;
   readonly user_metadata?: Metadata;
+  readonly id?: string;
 };
 type Metadata = {
   displayName?: string;
