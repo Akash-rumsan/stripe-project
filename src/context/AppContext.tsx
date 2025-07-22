@@ -1,5 +1,7 @@
 "use client";
 import { getUserDetail } from "@/app/action";
+import { useFetchSubscriptions } from "@/hooks/subscriptions";
+import { Subscription } from "@/hooks/subscriptions/types";
 import { createContext, useContext, useEffect, useState } from "react";
 
 type User = {
@@ -12,6 +14,8 @@ type Metadata = {
 };
 interface AppContextType {
   user: User;
+  subscriptions: Subscription[];
+  isPending: boolean;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -27,8 +31,16 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     fetchUser();
   }, []);
 
+  const { data: subscriptions, isPending } = useFetchSubscriptions(user?.id);
+
   return (
-    <AppContext.Provider value={{ user: user || {} }}>
+    <AppContext.Provider
+      value={{
+        user: user || {},
+        subscriptions,
+        isPending,
+      }}
+    >
       {children}
     </AppContext.Provider>
   );

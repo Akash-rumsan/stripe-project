@@ -21,14 +21,7 @@ export async function POST(
       payload.stripeSubsId,
       { cancel_at_period_end: true }
     );
-    // const canceledSubscription = await stripe.subscriptions.cancel(
-    //   payload.stripeSubsId
-    // );
 
-    // const { error: supabaseError } = await supabase
-    //   .from("subscriptions")
-    //   .delete()
-    //   .eq("id", payload.subscriptionId);
     const { error: supabaseError } = await supabase
       .from("subscriptions")
       .update({ status: "canceled" })

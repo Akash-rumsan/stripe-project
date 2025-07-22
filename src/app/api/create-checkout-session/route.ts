@@ -4,7 +4,6 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    console.log(body, "Request body for checkout session");
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card", "us_bank_account", "amazon_pay"],
       mode: "subscription", // or "payment"
@@ -14,24 +13,15 @@ export async function POST(req: NextRequest) {
           quantity: 1,
         },
       ],
-
       customer_email: body.customerEmail,
-
       success_url: `${req.nextUrl.origin}/dashboard/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.nextUrl.origin}/dashboard/cancel`,
       subscription_data: {
         metadata: {
           user_id: body.userId,
         },
-
-        invoice_settings: {
-          issuer: {
-            type: "self",
-          },
-        },
       },
     });
-    console.log("Stripe session created:", session);
     return NextResponse.json({ url: session.url });
   } catch (err) {
     console.error("Stripe error:", err);

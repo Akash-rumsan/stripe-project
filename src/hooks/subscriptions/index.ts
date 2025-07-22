@@ -3,13 +3,13 @@ import { UpdateSubscription } from "./types";
 import { useToast } from "../use-toast";
 import api from "@/utils/axiosInstance";
 
-export const useFetchSubscriptions = (email: string | undefined) => {
+export const useFetchSubscriptions = (user_id: string | undefined) => {
   return useQuery({
-    queryKey: ["subscriptions", email],
-    enabled: !!email, // Only run the query if email is provided
+    queryKey: ["subscriptions", user_id],
+    enabled: !!user_id, // Only run the query if email is provided
     queryFn: async () => {
       const response = await api.get("/subscriptions", {
-        params: { email }, // Pass email as a query parameter
+        params: { user_id }, // Pass user_id as a query parameter
       });
       if (response.status !== 200) {
         throw new Error("Failed to fetch subscriptions");

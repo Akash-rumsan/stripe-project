@@ -1,10 +1,9 @@
 "use client";
 
-import { Check, Zap, Rocket, Crown, ArrowLeft, Plus } from "lucide-react";
+import { Zap, ArrowLeft, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
@@ -22,13 +21,18 @@ export default function PaymentPlans() {
   const router = useRouter();
   const [isAddProductDialogOpen, setIsAddProductDialogOpen] = useState(false);
   const { paymentPlans, isPending } = usePaymentPlanContext();
-  const { mutate: createPlan } = useCreatePaymentPlan();
+  const { mutate: createPlan, isPending: isCreatingPlan } =
+    useCreatePaymentPlan();
 
   const handleBackToHome = () => {
     router.push("/dashboard"); // Navigate back to the home page
   };
   const handleAddProduct = (product: any) => {
-    createPlan(product);
+    createPlan(product, {
+      onSettled: () => {
+        setIsAddProductDialogOpen(false);
+      },
+    });
   };
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
@@ -51,7 +55,7 @@ export default function PaymentPlans() {
             and grow as your needs evolve.
           </p>
           <Button
-            className="bg-blue-600 hover:bg-blue-700 text-white text-lg px-8 py-4"
+            className="bg-blue-600 hover:bg-blue-700 text-white text-lg px-8 py-4 mt-8"
             onClick={() => setIsAddProductDialogOpen(true)}
           >
             <Plus className="mr-2 h-5 w-5" />
@@ -74,13 +78,6 @@ export default function PaymentPlans() {
               products, they'll appear here as subscription options.
             </p>
             <div className="space-y-4">
-              {/* <Button
-                className="bg-blue-600 hover:bg-blue-700 text-white text-lg px-8 py-4"
-                onClick={() => setIsAddProductDialogOpen(true)}
-              >
-                <Plus className="mr-2 h-5 w-5" />
-                Add Plans
-              </Button> */}
               <p className="text-sm text-slate-500 dark:text-slate-500">
                 Create your first product plan to get started with subscriptions
               </p>
@@ -127,22 +124,12 @@ export default function PaymentPlans() {
           </div>
         )}
 
-        {/* Additional Info */}
-        {/* <div className="text-center mt-16">
-          <p className="text-slate-600 dark:text-slate-400 mb-4">
-            All plans include a 14-day free trial. No credit card required.
-          </p>
-          <div className="flex justify-center gap-8 text-sm text-slate-500 dark:text-slate-500">
-            <span>✓ Cancel anytime</span>
-            <span>✓ Secure payments</span>
-            <span>✓ 99.9% uptime</span>
-          </div>
-        </div> */}
         {
           <AddProductDialog
             open={isAddProductDialogOpen}
             onOpenChange={setIsAddProductDialogOpen}
             onAddProduct={handleAddProduct}
+            isCreatingPlan={isCreatingPlan}
           />
         }
       </div>

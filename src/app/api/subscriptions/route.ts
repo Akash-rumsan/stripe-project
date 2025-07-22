@@ -3,17 +3,12 @@ import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
   const url = new URL(req.url);
-  const email = url.searchParams.get("email");
+  const user_id = url.searchParams.get("user_id");
   const { data, error } = await supabase
     .from("subscriptions")
     .select("*")
-    .eq("customer_email", email)
+    .eq("user_id", user_id)
     .eq("status", "active");
-  // const { data, error } = await supabase
-  //   .from("subscriptions")
-  //   .select("*, users(*)")
-  //   .eq("customer_email", email)
-  //   .eq("status", "active");
 
   if (error) {
     console.log("Error fetching subscriptions:", error);

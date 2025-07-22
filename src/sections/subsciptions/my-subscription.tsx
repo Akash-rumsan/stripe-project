@@ -9,10 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAppContext } from "@/context/AppContext";
-import {
-  useDeleteSubscription,
-  useFetchSubscriptions,
-} from "@/hooks/subscriptions";
+import { useDeleteSubscription } from "@/hooks/subscriptions";
 import {
   ArrowLeft,
   Calendar,
@@ -25,13 +22,11 @@ import {
   Zap,
 } from "lucide-react";
 import Link from "next/link";
-import React, { useTransition } from "react";
+import React from "react";
 
 export default function MySubscription() {
-  const { user } = useAppContext();
-  const [isPending, startTransition] = useTransition();
+  const { subscriptions } = useAppContext();
 
-  const { data } = useFetchSubscriptions(user.email);
   const { mutate: deleteSubscription } = useDeleteSubscription();
 
   const formatDate = (dateString: string) => {
@@ -72,11 +67,9 @@ export default function MySubscription() {
     subscriptionId: string,
     stripeSubsId: string
   ) => {
-    startTransition(() => {
-      deleteSubscription({
-        subscriptionId: subscriptionId,
-        stripeSubsId: stripeSubsId,
-      });
+    deleteSubscription({
+      subscriptionId: subscriptionId,
+      stripeSubsId: stripeSubsId,
     });
   };
 
@@ -87,17 +80,17 @@ export default function MySubscription() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
       <div className="container mx-auto px-4 py-16">
+        <Link href={"/dashboard"}>
+          <Button
+            variant="ghost"
+            className="mb-8 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Home
+          </Button>
+        </Link>
         {/* Header */}
         <div className="text-center mb-16">
-          <Link href={"/dashboard"}>
-            <Button
-              variant="ghost"
-              className="mb-8 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
-            >
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Home
-            </Button>
-          </Link>
           <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-slate-100 mb-6">
             My Subscriptions
           </h1>
@@ -107,19 +100,19 @@ export default function MySubscription() {
         </div>
 
         {/* Active Subscriptions */}
-        {data?.length > 0 && (
+        {subscriptions?.length > 0 && (
           <div className="max-w-6xl mx-auto mb-16">
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
                 Active Subscriptions
               </h2>
               <Badge variant="secondary" className="text-lg px-4 py-2">
-                {data.length} Active
+                {subscriptions.length} Active
               </Badge>
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {data.map((subscription: any) => (
+              {subscriptions.map((subscription: any) => (
                 <Card
                   key={subscription.id}
                   className="shadow-xl border-2 border-green-200 dark:border-green-800 bg-white/95 dark:bg-slate-800/95"
@@ -226,7 +219,7 @@ export default function MySubscription() {
         )}
 
         {/* Empty State */}
-        {data?.length === 0 && (
+        {subscriptions?.length === 0 && (
           <div className="text-center py-16">
             <div className="mx-auto mb-6 p-6 bg-slate-100 dark:bg-slate-800 rounded-full w-fit">
               <CreditCard className="h-12 w-12 text-slate-400" />

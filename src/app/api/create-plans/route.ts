@@ -8,16 +8,13 @@ export async function POST(req: NextRequest, res: NextResponse) {
     return NextResponse.json({ error: "Method Not Allowed" }, { status: 405 });
 
   try {
-    const { name, amount, interval, currency, description, billingPeriod } =
-      await req.json();
+    const { name, amount, interval, currency, description } = await req.json();
 
-    // 1. Create product in Stripe
     const product = await stripe.products.create({
       name,
       description,
     });
 
-    // 2. Create price for the product
     const price = await stripe.prices.create({
       product: product.id,
       unit_amount: amount, // in cents
@@ -27,14 +24,13 @@ export async function POST(req: NextRequest, res: NextResponse) {
       },
     });
 
-    // 3. Store in Supabase
     const { error } = await supabase.from("plans").insert([
       {
         name,
         description,
         stripe_product_id: product.id,
         stripe_price_id: price.id,
-        amount: amount / 100,
+        amount: amount,
         interval: interval,
         is_active: true,
       },

@@ -19,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, LoaderCircle } from "lucide-react";
 
 interface AddProductDialogProps {
   open: boolean;
@@ -29,15 +29,16 @@ interface AddProductDialogProps {
     description: string;
     amount: number;
     currency: string;
-    // interval: string;
     interval: string;
   }) => void;
+  isCreatingPlan: boolean;
 }
 
 export default function AddProductDialog({
   open,
   onOpenChange,
   onAddProduct,
+  isCreatingPlan,
 }: AddProductDialogProps) {
   const [formData, setFormData] = useState({
     name: "",
@@ -45,7 +46,6 @@ export default function AddProductDialog({
     amount: "",
     currency: "USD",
     interval: "month",
-    // billingPeriod: "Monthly",
   });
   const [errors, setErrors] = useState({
     name: false,
@@ -61,7 +61,6 @@ export default function AddProductDialog({
         amount: "",
         currency: "USD",
         interval: "month",
-        // billingPeriod: "Monthly",
       });
       setErrors({ name: false, amount: false });
     }
@@ -82,11 +81,7 @@ export default function AddProductDialog({
         amount: Number.parseFloat(formData.amount),
         currency: formData.currency,
         interval: formData.interval,
-        // billingPeriod: formData.billingPeriod,
       });
-
-      // Close dialog
-      onOpenChange(false);
     }
   };
 
@@ -237,8 +232,16 @@ export default function AddProductDialog({
           <Button
             onClick={handleSubmit}
             className="bg-blue-600 hover:bg-blue-700 text-white"
+            disabled={isCreatingPlan}
           >
-            Add product
+            {isCreatingPlan ? (
+              <>
+                Adding
+                <LoaderCircle className="animate-spin " />
+              </>
+            ) : (
+              "Add Product"
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>
