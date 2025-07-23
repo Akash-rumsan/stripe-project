@@ -1,81 +1,204 @@
-# Local Development Setup
+# Stripe Project Integration README
 
-This guide will help you set up the project for local development.
+This guide explains how to set up, configure, and integrate Stripe payments and subscriptions in this project.
 
-## Prerequisites
+## Table of Contents
 
-- [Node.js](https://nodejs.org/) (v22 or above recommended)
-- [pnpm](https://pnpm.io/installation)
-- [Docker](https://www.docker.com/get-started) (for running Supabase locally)
+1. [Stripe Setup](#1-stripe-setup)
+   - [Install Stripe Packages](#11-install-stripe-packages)
+   - [Get Your API Keys](#12-get-your-api-keys)
+2. [Create Products and Prices in Stripe](#2-create-products-and-prices-in-stripe)
+3. [Implement Stripe Checkout](#3-implement-stripe-checkout)
+   - [Create Checkout Session API Route](#31-create-checkout-session-api-route)
+4. [Handle Stripe Webhooks](#4-handle-stripe-webhooks)
+   - [Setup Webhook Endpoint](#41-setup-webhook-endpoint)
+5. [Environment Configuration](#5-environment-configuration)
+6. [Install Dependencies](#6-install-dependencies)
+7. [Stripe Integration](#7-stripe-integration)
+   - [API Endpoint](#api-endpoint)
+   - [Example Request](#example-request)
+   - [Example Response](#example-response)
+   - [Payment Methods Supported](#payment-methods-supported)
+   - [Success & Cancel URLs](#success--cancel-urls)
+8. [Running the Project](#8-running-the-project)
+9. [Stripe Webhooks (Local Testing)](#9-stripe-webhooks-local-testing)
+10. [Invoice Email Delivery in Stripe (Sandbox vs Live Mode)](#10-invoice-email-delivery-in-stripe-sandbox-vs-live-mode)
+11. [Error Handling](#11-error-handling)
+12. [Useful Links](#12-useful-links)
 
-## Getting Started
+## 1.Stripe Setup
 
-1. **Install dependencies**
-
-```bash
-pnpm install
-```
-
-2. **Run Supabase locally**
-
-- In the Supabase repo, go to the `docker` directory and copy the example environment file:
-
-  ```bash
-  cp .env.example .env
-  ```
-
-- Edit the new `.env` file and update the SMTP section with your SMTP credentials.
-
-- Start Supabase locally:
-
-  ```bash
-  source .env && supabase start
-  ```
-
-- Note the following variables from the Supabase `.env` file (you will need them for the Next.js app):
-
-  - `DASHBOARD_USERNAME` (for Supabase dashboard login)
-  - `DASHBOARD_PASSWORD` (for Supabase dashboard login)
-  - `SUPABASE_PUBLIC_URL` (for Next.js app)
-  - `ANON_KEY` (for Next.js app)
-
-3. **Set up environment variables**
-
-Copy the example environment file and update it as needed:
+### 1.1. Install Stripe Packages
 
 ```bash
-cp env.example .env
+pnpm add @stripe/stripe-js @stripe/react-stripe-js
+pnpm add -D stripe
 ```
 
-Edit `.env` and fill in the required values. You will need Supabase credentials (see above).
+### 1.2. Get Your API Keys
 
-4. **Configure the Next.js app**
+- Log in to your [Stripe Dashboard](https://dashboard.stripe.com)
+- Navigate to **Developers → API keys**
+- Copy the **Publishable key** and **Secret key** for both **test** and **live** modes
 
-- Update your `.env.local` file with the `SUPABASE_PUBLIC_URL` and `ANON_KEY` from your Supabase instance.
+Store these in `.env.local`:
 
-5. **Run the development server**
+```env
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
+STRIPE_SECRET_KEY=sk_test_...
+```
+
+## 2. Create Products and Prices in Stripe
+
+- Go to **Stripe Dashboard → Products**
+- Create product(s) like `Basic Plan`, `Pro Plan`, etc.
+- Add **pricing tiers** (monthly, yearly) as needed
+- Each pricing tier generates a **Price ID**, which is used in the code
+
+## 3.Implement Stripe Checkout
+
+### 3.1. Create Checkout Session API Route
+
+`/app/api/create-checkout-session/route.ts`:
+
+```ts
+import { stripe } from "@/lib/stripe"; // helper to init Stripe with secret key
+import { NextRequest, NextResponse } from "next/server";
+
+export async function POST(req: NextRequest) {
+  const { priceId } = await req.json();
+
+  const session = await stripe.checkout.sessions.create({
+    mode: "subscription",
+    payment_method_types: ["card"],
+    line_items: [{ price: priceId, quantity: 1 }],
+    success_url: "http://localhost:3000/success",
+    cancel_url: "http://localhost:3000/cancel",
+  });
+
+  return NextResponse.json({ url: session.url });
+}
+```
+
+## 4. Handle Stripe Webhooks
+
+### 4.1. Setup Webhook Endpoint
+
+Use this route: `/api/stripe/webhook`
+
+Verify Stripe signature and handle events like:
+
+- `checkout.session.completed`
+- `invoice.paid`
+- `customer.subscription.created`
+
+Stripe sends data to this endpoint when something billing-related happens.
+
+## 5.Environment Configuration
+
+Create a `.env.local` file in the project root and add the following variables:
+
+```env
+# Next.js
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your-secret-key
+
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+
+# Stripe
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+```
+
+> **Note:** To test Stripe webhooks locally, run:
+>
+> ```bash
+> stripe listen --forward-to localhost:3000/api/webhooks/stripe
+> ```
+>
+> This will generate your `STRIPE_WEBHOOK_SECRET`.
+
+## 6. Install Dependencies
 
 ```bash
-pnpm dev
+yarn install
+# or
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser to see the app.
+## 7.Stripe Integration
 
-6. **Update the database and generate migration files**
+### API Endpoint
 
-- To make changes to the database schema, use the SQL Editor in the Supabase dashboard.
-- After applying your changes, generate a migration file to keep track of schema updates:
+- **File:** `route.ts`
+- **Method:** POST
+- **Purpose:** Creates a Stripe Checkout Session for subscriptions or payments
 
-  ```bash
-  supabase db diff --file migrations/$(date +"%Y%m%d%H%M%S")_migration.sql
-  ```
+### Example Request
 
-- This will create a new migration file in the `migrations` directory with a timestamp.
-- Now, If you want to dump the data as well for updating the dev/prod data,
-  use the following bash command:
-
-```bash
-supabase db dump --local --data-only > supabase/seed.sql
+```json
+{
+  "priceId": "price_12345",
+  "customerEmail": "user@example.com",
+  "userId": "user_abc"
+}
 ```
 
-> **Note:** If you restart Supabase, your anon key and other credentials will remain intact since we are using same config.toml. Restarting does not destroy the anon key.
+### Example Response
+
+```json
+{
+  "url": "https://checkout.stripe.com/pay/cs_test_..."
+}
+```
+
+### Payment Methods Supported
+
+- Card
+- US Bank Account
+- Amazon Pay
+
+### Success & Cancel URLs
+
+- **Success:** `/dashboard/success?session_id={CHECKOUT_SESSION_ID}`
+- **Cancel:** `/dashboard/cancel`
+
+## 8. Running the Project
+
+Visit [http://localhost:3000](http://localhost:3000).
+
+## 9. Stripe Webhooks (Local Testing)
+
+To test webhooks locally:
+
+1. Run the Stripe CLI listener:
+
+   ```bash
+   stripe listen --forward-to localhost:3000/api/webhooks/stripe
+   ```
+
+2. Copy the generated webhook secret to your `.env.local` as `STRIPE_WEBHOOK_SECRET`.
+
+## 10. Invoice Email Delivery in Stripe (Sandbox vs Live Mode)
+
+While developing and testing Stripe integration, it's possible to create and preview invoice email templates. However, Stripe's sandbox (test) environment does not send actual invoice or receipt emails to customers. This functionality is only available when using live API keys.
+
+> ⚠️ **Note:** To fully test email delivery (like invoice or receipt emails), you must switch to live mode and use real customer email addresses.
+
+## 11. Error Handling
+
+- Stripe errors are logged to the server console
+- API returns `{ error: "Something went wrong" }` with status 500 on failure
+
+## 12. Useful Links
+
+- [Stripe Documentation](https://stripe.com/docs)
+- [Next.js API Routes](https://nextjs.org/docs/api-routes/introduction)
+
+---
+
+For additional support or questions, please refer to the project documentation or contact the development team.
