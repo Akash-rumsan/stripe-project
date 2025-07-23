@@ -33,7 +33,7 @@ export async function POST(req: Request) {
 
     // get user_id from metadata
     const userId = subscription.metadata.user_id;
-
+   
     const { error } = await supabase.from("subscriptions").insert({
       plan_name: products.name,
       user_id: userId,

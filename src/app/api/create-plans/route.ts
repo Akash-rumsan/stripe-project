@@ -9,7 +9,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
   try {
     const { name, amount, interval, currency, description } = await req.json();
-
+    console.log(amount, "Amount in create-plan API");
     const product = await stripe.products.create({
       name,
       description,
@@ -17,7 +17,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
     const price = await stripe.prices.create({
       product: product.id,
-      unit_amount: amount, // in cents
+      unit_amount: amount * 100, // in cents
       currency,
       recurring: {
         interval, // 'month' or 'year'

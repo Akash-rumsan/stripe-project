@@ -48,7 +48,7 @@ export default function PaymentPlans() {
         </Button>
         <div className="text-center mb-16">
           <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-slate-900 to-slate-600 dark:from-slate-100 dark:to-slate-400 bg-clip-text text-transparent mb-6">
-            Choose Your Mefqna Plan
+            Choose Your Plan
           </h1>
           <p className="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
             Scale your projects with our flexible pricing options. Start small

@@ -11,4 +11,5 @@ export interface Subscription {
   created_at: string;
   updated_at: string;
   user_id: string;
+  amount: number;
 }

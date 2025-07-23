@@ -64,6 +64,7 @@ const updateSubscription = async (payload: UpdateSubscription) => {
     newPriceId: payload.newPriceId,
     subId: payload.id, // Include subscription ID if needed
   });
+  return response.data;
 };
 export const useUpdateSubscription = () => {
   const queryClient = useQueryClient();

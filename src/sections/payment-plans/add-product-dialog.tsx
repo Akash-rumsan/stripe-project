@@ -94,7 +94,7 @@ export default function AddProductDialog({
       <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-2xl font-semibold">
-            Add a product
+            Add a plan
           </DialogTitle>
         </DialogHeader>
 

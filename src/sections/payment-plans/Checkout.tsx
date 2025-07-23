@@ -50,49 +50,21 @@ export default function Checkout({ plan }: any) {
       );
     }
   };
-  // const handleCheckout = () => {
-  //   startTransition(() => {
-  //     if (data && data.length > 0) {
-  //       if (plan.stripe_price_id === data[0].stripe_price_id) {
-  //         toast({
-  //           title: "Already Subscribed",
-  //           description: "You are already subscribed to this plan.",
-  //         });
-  //         return;
-  //       }
-  //       updateSubscription({
-  //         id: data[0].id,
-  //         email: user.email!,
-  //         newPriceId: plan.stripe_price_id,
-  //       });
-  //     } else {
-  //       createCheckoutSession(
-  //         {
-  //           priceId: plan.stripe_price_id,
-  //           customerEmail: user.email!,
-  //           userId: user?.id!,
-  //         },
-  //         {
-  //           onSuccess: (data) => {
-  //             if (data.url) {
-  //               router.push(data.url);
-  //             } else {
-  //               console.error("Checkout error:", data);
-  //             }
-  //           },
-  //         }
-  //       );
-  //     }
-  //   });
-  // };
+
   return (
     <Button
       className={
         "w-full py-6 text-lg font-semibold transition-all duration-300 bg-blue-600 hover:bg-blue-700  text-white shadow-lg hover:shadow-xl"
       }
       onClick={handleCheckout}
+      disabled={subscriptions[0]?.stripe_price_id === plan.stripe_price_id}
     >
-      Buy
+      {subscriptions && subscriptions?.length === 0
+        ? "Buy"
+        : subscriptions[0]?.stripe_price_id === plan.stripe_price_id
+        ? "Subscribed"
+        : "Upgrade"}
+
       {isPending || updatingSubscription ? (
         <LoaderCircle className="animate-spin " />
       ) : null}

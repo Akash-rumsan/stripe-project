@@ -29,7 +29,7 @@ export default function HomePage() {
 
   const { paymentPlans, isPending: isLoadingPlans } = usePaymentPlanContext();
   const { subscriptions, isPending: isLoadingSubscriptions } = useAppContext();
-
+  console.log(paymentPlans, "Payment Plans Data");
   // Direct data checks
   const hasPlans = paymentPlans && !isLoadingPlans;
   const hasSubscriptions = subscriptions && !isLoadingSubscriptions;
@@ -169,7 +169,10 @@ export default function HomePage() {
                       </div>
                       <div className="text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
                         <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                          $ 60
+                          {subscriptions?.reduce(
+                            (total, sub) => total + sub.amount,
+                            0
+                          ) || 0}
                         </div>
                         <div className="text-sm text-slate-600 dark:text-slate-400">
                           Monthly Total
