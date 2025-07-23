@@ -28,12 +28,10 @@ export async function POST(req: Request) {
     const products = await stripe.products.retrieve(
       subscription.items.data[0].price.product as string
     );
-    console.log("Subscription created:", subscription);
-    console.log(invoice, "Invoice from webhook");
 
     // get user_id from metadata
     const userId = subscription.metadata.user_id;
-   
+
     const { error } = await supabase.from("subscriptions").insert({
       plan_name: products.name,
       user_id: userId,

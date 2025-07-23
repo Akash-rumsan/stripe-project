@@ -80,7 +80,6 @@ export const useUpdateSubscription = () => {
         title: "Subscription updated successfully",
         description: "Your subscription has been updated.",
       });
-      console.log("Subscription updated successfully:", data);
     },
     onError: (error) => {
       console.error("Error updating subscription:", error);

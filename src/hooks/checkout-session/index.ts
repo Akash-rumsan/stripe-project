@@ -7,7 +7,6 @@ interface CheckoutData {
   userId: string;
 }
 const createCheckoutSession = async (checkoutData: CheckoutData) => {
-  console.log("Creating checkout session with data:", checkoutData);
   const response = await api.post("/create-checkout-session", checkoutData);
 
   if (response.status !== 200) {

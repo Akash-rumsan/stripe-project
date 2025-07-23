@@ -11,7 +11,7 @@ export async function GET(req: Request) {
     .eq("status", "active");
 
   if (error) {
-    console.log("Error fetching subscriptions:", error);
+    console.error("Error fetching subscriptions:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 

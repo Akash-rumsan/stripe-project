@@ -3,13 +3,11 @@ import { stripe } from "@/lib/stripe";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest, res: NextResponse) {
-  console.log(req.method, "Method called in create-plan API");
   if (req.method !== "POST")
     return NextResponse.json({ error: "Method Not Allowed" }, { status: 405 });
 
   try {
     const { name, amount, interval, currency, description } = await req.json();
-    console.log(amount, "Amount in create-plan API");
     const product = await stripe.products.create({
       name,
       description,
